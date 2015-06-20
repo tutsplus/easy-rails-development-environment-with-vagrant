@@ -1,0 +1,33 @@
+@import "bootstrap";
+@import "bootstrap-sprockets";
+
+.contact {
+  margin: 15px 0;
+  padding: 10px;
+  border: 1px solid #DDD;
+  background: #F0F0F0;
+
+  @include clearfix;
+
+  .avatar {
+    max-width: 80px;
+    border: 1px solid #CCC;
+    background: white;
+  }
+
+  a.edit-link, a.delete-link {
+    text-align: center;
+    margin: 10px 0;
+  }
+
+  .name {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  p {
+    margin-left: 90px;
+
+    &:first-of-type, &:last-child { margin-bottom: 0; }
+  }
+}

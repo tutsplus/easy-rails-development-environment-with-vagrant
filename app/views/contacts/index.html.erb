@@ -1,0 +1,33 @@
+
+<div class="pull-right"><%= link_to 'New Contact', new_contact_path, class: 'btn btn-success' %></div>
+<div><%= link_to 'Generate Sample Contacts', generate_contacts_path, method: :post, class: 'btn btn-info' %></div>
+
+<div class="contacts row">
+  <% if @contacts.size > 0 %>
+    <% @contacts.each do |contact| %>
+      <div class="col-sm-4">
+        <div class="contact">
+          <div class="pull-left">
+            <%= image_tag contact.avatar_url, class: 'avatar' %>
+            <%= link_to 'Edit', edit_contact_path(contact), class: 'btn btn-xs btn-warning edit-link btn-block' %>
+            <%= link_to 'Delete', contact_path(contact), method: :delete, class: 'btn btn-xs btn-danger delete-link btn-block' %>
+          </div>
+          <p><%= link_to "#{contact.first_name} #{contact.last_name}", contact, class: 'name' %></p>
+          <p><%= link_to "@#{contact.twitter}", "https://twitter.com/#{contact.twitter}" %></p>
+          <p>
+            <%= contact.street_address %><br>
+            <%= contact.country_code %>-<%= contact.zip_code %>, <%= contact.city %>
+          </p>
+
+          <p>
+            Phone: <%= contact.phone_number %><br>
+            Email: <%= link_to contact.email, "mailto:#{contact.email}" %>
+          </p>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="col-sm-12 text-center">
+      There are no contacts yet. <%= link_to 'Create one', new_contact_path %>.
+  <% end %>
+</div>
