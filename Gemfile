@@ -43,6 +43,8 @@ group :development, :test do
   gem 'spring'
 end
 
+gem 'foreman'
+
 gem 'bootstrap-sass'
 gem 'faker'
 gem 'sidekiq'
