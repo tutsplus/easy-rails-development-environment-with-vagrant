@@ -64,8 +64,50 @@ Vagrant.configure(2) do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  # config.vm.provision "shell", inline: <<-SHELL
-  #   sudo apt-get update
-  #   sudo apt-get install -y apache2
-  # SHELL
+  config.vm.provision "shell", privileged: false, inline: <<-SHELL
+    # Install curl and PostgreSQL
+    sudo apt-get update
+    sudo apt-get install -y curl postgresql-common postgresql-9.3 libpq-dev
+    # Create the vagrant db user
+    sudo su postgres -c "createuser vagrant -s"
+    # Install RVM, Ruby 2.2 and Bundler
+    gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+    gpg --list-keys D39DC0E3 > /dev/null
+    if [[ $? != 0 ]]; then curl -sSL https://rvm.io/mpapis.asc | gpg --import - ; fi
+    curl -sSL https://get.rvm.io | bash -s stable
+    source /home/vagrant/.profile
+    rvm install 2.2
+    gem install bundler --no-ri --no-rdoc
+    # Compile and install Redis
+    if [ ! -s "redis-stable.tar.gz" ]; then
+      curl http://download.redis.io/redis-stable.tar.gz -o redis-stable.tar.gz
+      tar xzf redis-stable.tar.gz
+      cd redis-stable
+      make
+      sudo make install
+      # Create folders, copy configuration file and init script
+      sudo mkdir -p /var/redis/6379 /etc/redis
+      sudo cp utils/redis_init_script /etc/init.d/redis_6379
+      sudo update-rc.d redis_6379 defaults
+      sudo cp redis.conf /etc/redis/6379.conf
+      # Edit the default configuration file
+      sudo sed -i 's/daemonize no/daemonize yes/g' /etc/redis/6379.conf
+      sudo sed -i 's/redis.pid/redis_6379.pid/g' /etc/redis/6379.conf
+      sudo sed -i 's/# bind 127.0.0.1/bind 127.0.0.1/g' /etc/redis/6379.conf
+      sudo sed -i 's/logfile ""/logfile \/var\/log\/redis_6379.log/g' /etc/redis/6379.conf
+      sudo sed -i 's/dir .\//dir \/var\/redis\/6379/g' /etc/redis/6379.conf
+      # Start Redis
+      sudo service redis_6379 start
+      # Cleanup
+      cd ..
+      sudo rm -rf redis-stable
+    fi
+    # Install bundled gems and create database
+    cd /vagrant
+    bundle
+    rake db:create db:migrate
+    # Create app init scripts with Foreman
+    rvmsudo foreman export upstart /etc/init -a rails -u vagrant
+    sudo service rails start
+  SHELL
 end
