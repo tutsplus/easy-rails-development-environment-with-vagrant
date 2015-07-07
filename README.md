@@ -1,4 +1,4 @@
-# [Easy Rails Development Environment With Vagrant][published url]
+# [Easy Rails Development Environment With Vagrant][published url]
 ## Instructor: [Markus Mühlberger][instructor url]
 
 
@@ -11,9 +11,9 @@ This repository contains the Rails app we are going to use as an example applica
 
 ------
 
-These are source files for the Tuts+ course: Easy Rails Development Environment With Vagrant][published url]
+These are source files for the Tuts+ course: [Easy Rails Development Environment With Vagrant][published url]
 
 Available on [Tuts+](https://tutsplus.com). Teaching skills to millions worldwide.
 
 [published url]: https://code.tutsplus.com/courses/easy-rails-development-environment-with-vagrant
-[instructor url]: https://tutsplus.com/authors/markus-meuhlberger
+[instructor url]: https://tutsplus.com/authors/markus-muehlberger
